@@ -45,11 +45,12 @@ ENV USER=opencode
 ENV HOME=/home/opencode
 ENV NVM_DIR=/opt/nvm
 ENV BUN_INSTALL=/opt/bun
+ENV PATH=/home/opencode/.local/bin:/opt/bun/bin:/opt/node-current/bin:${PATH}
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
     && useradd --create-home --shell /bin/bash "${USER}" \
-    && mkdir -p /workspace "${NVM_DIR}" "${BUN_INSTALL}" \
+    && mkdir -p /workspace "${HOME}/.local/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
     && chown -R "${USER}:${USER}" /workspace "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -65,12 +66,11 @@ RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && source "%s/nvm.sh"\n' "${
         > /etc/profile.d/nvm.sh \
     && chown -R "${USER}:${USER}" "${NVM_DIR}" "${BUN_INSTALL}"
 
-ENV PATH=/opt/bun/bin:/opt/node-current/bin:${PATH}
-
 USER ${USER}
 WORKDIR /workspace
 
 # Install Evan's fork of OpenCode into the non-root user's environment.
-RUN curl -fsSL https://raw.githubusercontent.com/iamEvanYT/forked-opencode/refs/heads/main/install.sh | bash
+RUN curl -fsSL https://raw.githubusercontent.com/iamEvanYT/forked-opencode/refs/heads/main/install.sh | bash \
+    && command -v opencode
 
 CMD ["opencode", "serve", "--hostname", "0.0.0.0"]
