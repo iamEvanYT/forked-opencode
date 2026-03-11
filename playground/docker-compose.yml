@@ -1,7 +1,7 @@
 services:
   # OpenCode server pulled from GHCR.
   opencode:
-    image: ghcr.io/iamevanyt/forked-opencode-playground:latest
+    image: ghcr.io/iamevanyt/opencode-playground:latest
     container_name: opencode
     restart: unless-stopped
 
