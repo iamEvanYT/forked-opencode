@@ -1,9 +1,7 @@
 services:
-  # OpenCode server built from the local Dockerfile.
+  # OpenCode server pulled from GHCR.
   opencode:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/iamevanyt/forked-opencode-playground:latest
     container_name: opencode
     restart: unless-stopped
 
