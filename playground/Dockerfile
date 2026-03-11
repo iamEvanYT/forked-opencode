@@ -56,7 +56,6 @@ RUN apt-get update \
 
 # Copy runtime artifacts from the builder stages.
 COPY --from=gh-builder /usr/bin/gh /usr/bin/gh
-COPY --from=gh-builder /usr/share/doc/github-cli /usr/share/doc/github-cli
 COPY --from=tool-builder /opt/nvm /opt/nvm
 COPY --from=tool-builder /opt/bun /opt/bun
 COPY --from=tool-builder /opt/node-current /opt/node-current
