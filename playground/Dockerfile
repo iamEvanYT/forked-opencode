@@ -60,7 +60,7 @@ RUN apt-get update \
       fi \
     && usermod --gid "${USER_GROUP}" "${USER}" \
     && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
-    && chown -R "${USER}:${USER}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
+    && chown -R "${USER}:${USER_GROUP}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -77,7 +77,7 @@ RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_D
     && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
     && ln -sf /opt/node-current/bin/npm /usr/local/bin/npm \
     && ln -sf /opt/node-current/bin/npx /usr/local/bin/npx \
-    && chown -R "${USER}:${USER}" "${NVM_DIR}" "${BUN_INSTALL}"
+    && chown -R "${USER}:$(id -gn "${USER}")" "${NVM_DIR}" "${BUN_INSTALL}"
 
 USER ${USER}
 WORKDIR /projects
