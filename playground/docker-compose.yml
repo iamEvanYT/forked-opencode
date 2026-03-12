@@ -13,7 +13,9 @@ services:
     # Make the current project available inside the container.
     volumes:
       - ./projects:/projects
-      - ./home:/home
+      - ./volumes/local:/home/opencode/.local
+      - ./volumes/cache:/home/opencode/.cache
+      - ./volumes/config:/home/opencode/.config
 
     # Keep the server reachable from outside the container.
     environment:
