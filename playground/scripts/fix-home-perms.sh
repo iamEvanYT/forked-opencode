@@ -2,22 +2,33 @@
 
 set -euo pipefail
 
-TARGET_PATH="${1:-.}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_TARGET_PATH="$(cd "${SCRIPT_DIR}/.." && pwd)"
+TARGET_PATH="${1:-${DEFAULT_TARGET_PATH}}"
 TARGET_UID="${TARGET_UID:-1000}"
 TARGET_GID="${TARGET_GID:-1000}"
+PROJECTS_PATH="${TARGET_PATH}/projects"
+VOLUMES_PATH="${TARGET_PATH}/volumes"
+LOCAL_PATH="${VOLUMES_PATH}/local"
+CACHE_PATH="${VOLUMES_PATH}/cache"
+CONFIG_PATH="${VOLUMES_PATH}/config"
 
 if [ ! -d "${TARGET_PATH}" ]; then
   echo "Creating ${TARGET_PATH}"
   sudo mkdir -p "${TARGET_PATH}"
 fi
 
-echo "Fixing ownership on ${TARGET_PATH} to ${TARGET_UID}:${TARGET_GID}"
-sudo chown -R "${TARGET_UID}:${TARGET_GID}" "${TARGET_PATH}"
-
-echo "Creating OpenCode runtime directories"
+echo "Creating OpenCode bind-mount directories in ${TARGET_PATH}"
 sudo install -d -o "${TARGET_UID}" -g "${TARGET_GID}" -m 755 \
-  "${TARGET_PATH}/volumes/local" \
-  "${TARGET_PATH}/volumes/config" \
-  "${TARGET_PATH}/volumes/cache"
+  "${PROJECTS_PATH}" \
+  "${LOCAL_PATH}" \
+  "${LOCAL_PATH}/share" \
+  "${CACHE_PATH}" \
+  "${CONFIG_PATH}"
+
+echo "Fixing ownership on bind-mount directories to ${TARGET_UID}:${TARGET_GID}"
+sudo chown -R "${TARGET_UID}:${TARGET_GID}" \
+  "${PROJECTS_PATH}" \
+  "${VOLUMES_PATH}"
 
 echo "Done. Restart the container after this."
