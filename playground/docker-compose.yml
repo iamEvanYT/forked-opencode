@@ -3,6 +3,7 @@ services:
   opencode:
     hostname: playground
     container_name: opencode
+    build: .
     image: ghcr.io/iamevanyt/opencode-playground:latest
     restart: unless-stopped
 

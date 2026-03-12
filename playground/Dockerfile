@@ -43,12 +43,15 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV USER=opencode
 ENV HOME=/home/opencode
+ENV UID=1000
+ENV GID=1000
 ENV NVM_DIR=/opt/nvm
 ENV BUN_INSTALL=/opt/bun
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
-    && useradd --create-home --shell /bin/bash "${USER}" \
+    && groupadd --gid "${GID}" "${USER}" \
+    && useradd --uid "${UID}" --gid "${GID}" --create-home --shell /bin/bash "${USER}" \
     && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
     && chown -R "${USER}:${USER}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
@@ -61,7 +64,7 @@ COPY --from=tool-builder /opt/bun /opt/bun
 COPY --from=tool-builder /opt/node-current /opt/node-current
 
 # Load nvm automatically for interactive shells.
-RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && source "%s/nvm.sh"\n' "${NVM_DIR}" "${NVM_DIR}" "${NVM_DIR}" \
+RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_DIR}" "${NVM_DIR}" "${NVM_DIR}" \
         > /etc/profile.d/nvm.sh \
     && ln -sf /opt/bun/bin/bun /usr/local/bin/bun \
     && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
