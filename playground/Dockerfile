@@ -50,8 +50,9 @@ ENV BUN_INSTALL=/opt/bun
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
-    && groupadd --gid "${GID}" "${USER}" \
-    && useradd --uid "${UID}" --gid "${GID}" --create-home --shell /bin/bash "${USER}" \
+    && USER_GROUP="$(getent group "${GID}" | cut -d: -f1)" \
+    && if [ -z "${USER_GROUP}" ]; then groupadd --gid "${GID}" "${USER}"; USER_GROUP="${USER}"; fi \
+    && useradd --uid "${UID}" --gid "${USER_GROUP}" --create-home --shell /bin/bash "${USER}" \
     && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
     && chown -R "${USER}:${USER}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
