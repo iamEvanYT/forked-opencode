@@ -113,9 +113,6 @@ RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_D
     && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
     && ln -sf /opt/node-current/bin/npm /usr/local/bin/npm \
     && ln -sf /opt/node-current/bin/npx /usr/local/bin/npx \
-    && printf '[ -f /etc/bash_completion ] && . /etc/bash_completion\n[ -f /etc/profile.d/nvm.sh ] && . /etc/profile.d/nvm.sh\nexport PATH="$HOME/.opencode/bin:$PATH"\n' \
-        > "${HOME}/.bashrc" \
-    && chown "${USER}:$(id -gn "${USER}")" "${HOME}/.bashrc" \
     && chown -R "${USER}:$(id -gn "${USER}")" "${NVM_DIR}" "${BUN_INSTALL}"
 
 USER ${USER}
