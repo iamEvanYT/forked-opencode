@@ -4,7 +4,7 @@ FROM ubuntu:24.04 AS gh-builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl gpg \
+    && apt-get install -y ca-certificates curl gpg \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
         | gpg --dearmor -o /etc/apt/keyrings/githubcli-archive-keyring.gpg \
@@ -12,7 +12,7 @@ RUN apt-get update \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
         > /etc/apt/sources.list.d/github-cli.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends gh \
+    && apt-get install -y gh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,7 +26,7 @@ ENV BUN_INSTALL=/opt/bun
 SHELL ["/bin/bash", "-lc"]
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash ca-certificates curl unzip \
+    && apt-get install -y bash ca-certificates curl unzip \
     && mkdir -p "${NVM_DIR}" "${BUN_INSTALL}" \
     && curl -fsSL https://bun.sh/install | env BUN_INSTALL="${BUN_INSTALL}" bash \
     && curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
@@ -37,7 +37,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Final runtime image with only the required tools and a non-root user.
+# Final runtime image with a more standard Ubuntu CLI toolset and a non-root user.
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -47,9 +47,31 @@ ENV UID=1000
 ENV GID=1000
 ENV NVM_DIR=/opt/nvm
 ENV BUN_INSTALL=/opt/bun
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash ca-certificates curl git \
+    && apt-get install -y \
+        bash \
+        bash-completion \
+        ca-certificates \
+        curl \
+        file \
+        git \
+        iproute2 \
+        iputils-ping \
+        less \
+        locales \
+        man-db \
+        nano \
+        net-tools \
+        procps \
+        psmisc \
+        sudo \
+        unzip \
+        vim-tiny \
+        wget \
+        xz-utils \
     && USER_GROUP="$(getent group "${GID}" | cut -d: -f1)" \
     && if [ -z "${USER_GROUP}" ]; then groupadd --gid "${GID}" "${USER}"; USER_GROUP="${USER}"; fi \
     && EXISTING_USER="$(getent passwd "${UID}" | cut -d: -f1)" \
@@ -61,6 +83,9 @@ RUN apt-get update \
     && usermod --gid "${USER_GROUP}" "${USER}" \
     && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
     && chown -R "${USER}:${USER_GROUP}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
+    && locale-gen en_US.UTF-8 \
+    && echo "${USER} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER}" \
+    && chmod 0440 "/etc/sudoers.d/${USER}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
