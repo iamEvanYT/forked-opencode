@@ -49,8 +49,8 @@ ENV BUN_INSTALL=/opt/bun
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
     && useradd --create-home --shell /bin/bash "${USER}" \
-    && mkdir -p /workspace "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
-    && chown -R "${USER}:${USER}" /workspace "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
+    && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
+    && chown -R "${USER}:${USER}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -63,10 +63,14 @@ COPY --from=tool-builder /opt/node-current /opt/node-current
 # Load nvm automatically for interactive shells.
 RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && source "%s/nvm.sh"\n' "${NVM_DIR}" "${NVM_DIR}" "${NVM_DIR}" \
         > /etc/profile.d/nvm.sh \
+    && ln -sf /opt/bun/bin/bun /usr/local/bin/bun \
+    && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
+    && ln -sf /opt/node-current/bin/npm /usr/local/bin/npm \
+    && ln -sf /opt/node-current/bin/npx /usr/local/bin/npx \
     && chown -R "${USER}:${USER}" "${NVM_DIR}" "${BUN_INSTALL}"
 
 USER ${USER}
-WORKDIR /workspace
+WORKDIR /projects
 
 # Install Evan's fork of OpenCode into the non-root user's environment.
 RUN curl -fsSL https://raw.githubusercontent.com/iamEvanYT/forked-opencode/refs/heads/main/install.sh | bash \

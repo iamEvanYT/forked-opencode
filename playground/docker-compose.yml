@@ -1,8 +1,9 @@
 services:
   # OpenCode server pulled from GHCR.
   opencode:
-    image: ghcr.io/iamevanyt/opencode-playground:latest
+    hostname: playground
     container_name: opencode
+    image: ghcr.io/iamevanyt/opencode-playground:latest
     restart: unless-stopped
 
     # Publish the OpenCode server port to the host.
@@ -12,6 +13,7 @@ services:
     # Make the current project available inside the container.
     volumes:
       - ./projects:/projects
+      - ./home:/home/opencode/
 
     # Keep the server reachable from outside the container.
     environment:
