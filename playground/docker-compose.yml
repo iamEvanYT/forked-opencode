@@ -13,15 +13,10 @@ services:
     # Make the current project available inside the container.
     volumes:
       - ./projects:/projects
-      - opencode-local:/home/opencode/.local
-      - opencode-cache:/home/opencode/.cache
-      - opencode-config:/home/opencode/.config
+      - ./volumes/local:/home/opencode/.local
+      - ./volumes/cache:/home/opencode/.cache
+      - ./volumes/config:/home/opencode/.config
 
     # Keep the server reachable from outside the container.
     environment:
       PORT: "4096"
-
-volumes:
-  opencode-local:
-  opencode-cache:
-  opencode-config:

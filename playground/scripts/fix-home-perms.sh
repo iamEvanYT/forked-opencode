@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-TARGET_PATH="${1:-/home/opencode}"
+TARGET_PATH="${1:-.}"
 TARGET_UID="${TARGET_UID:-1000}"
 TARGET_GID="${TARGET_GID:-1000}"
 
