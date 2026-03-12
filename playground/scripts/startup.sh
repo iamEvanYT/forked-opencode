@@ -3,6 +3,6 @@
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 PROJECT_ROOT="$(CDPATH= cd -- "${SCRIPT_DIR}/.." && pwd)"
 
-"${SCRIPT_DIR}/fix-home-perms.sh" "${PROJECT_ROOT}"
+"${SCRIPT_DIR}/setup.sh" "${PROJECT_ROOT}"
 sudo docker compose up -d
 sudo docker compose logs --follow

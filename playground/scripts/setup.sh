@@ -12,6 +12,7 @@ VOLUMES_PATH="${TARGET_PATH}/volumes"
 LOCAL_PATH="${VOLUMES_PATH}/local"
 CACHE_PATH="${VOLUMES_PATH}/cache"
 CONFIG_PATH="${VOLUMES_PATH}/config"
+GITCONFIG_PATH="${CONFIG_PATH}/gitconfig"
 
 if [ ! -d "${TARGET_PATH}" ]; then
   echo "Creating ${TARGET_PATH}"
@@ -26,9 +27,14 @@ sudo install -d -o "${TARGET_UID}" -g "${TARGET_GID}" -m 755 \
   "${CACHE_PATH}" \
   "${CONFIG_PATH}"
 
-echo "Fixing ownership on bind-mount directories to ${TARGET_UID}:${TARGET_GID}"
+if [ ! -e "${GITCONFIG_PATH}" ]; then
+  echo "Creating ${GITCONFIG_PATH}"
+  sudo install -o "${TARGET_UID}" -g "${TARGET_GID}" -m 644 /dev/null "${GITCONFIG_PATH}"
+fi
+
+echo "Fixing ownership on bind-mount paths to ${TARGET_UID}:${TARGET_GID}"
 sudo chown -R "${TARGET_UID}:${TARGET_GID}" \
   "${PROJECTS_PATH}" \
   "${VOLUMES_PATH}"
 
-echo "Done. Restart the container after this."
+echo "Setup complete."
