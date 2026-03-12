@@ -16,10 +16,8 @@ sudo chown -R "${TARGET_UID}:${TARGET_GID}" "${TARGET_PATH}"
 
 echo "Creating OpenCode runtime directories"
 sudo install -d -o "${TARGET_UID}" -g "${TARGET_GID}" -m 755 \
-  "${TARGET_PATH}/.local" \
-  "${TARGET_PATH}/.local/share" \
-  "${TARGET_PATH}/.local/state" \
-  "${TARGET_PATH}/.config" \
-  "${TARGET_PATH}/.cache"
+  "${TARGET_PATH}/volumes/local" \
+  "${TARGET_PATH}/volumes/config" \
+  "${TARGET_PATH}/volumes/cache"
 
 echo "Done. Restart the container after this."
