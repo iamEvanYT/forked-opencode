@@ -37,7 +37,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Final runtime image with a more standard Ubuntu CLI toolset and a non-root user.
+# Final image for an agent-friendly Ubuntu development environment.
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -54,24 +54,34 @@ RUN apt-get update \
     && apt-get install -y \
         bash \
         bash-completion \
+        build-essential \
         ca-certificates \
         curl \
+        dnsutils \
+        fd-find \
         file \
         git \
         iproute2 \
         iputils-ping \
+        jq \
         less \
         locales \
         man-db \
         nano \
         net-tools \
+        openssh-client \
         procps \
         psmisc \
+        ripgrep \
+        rsync \
         sudo \
+        tmux \
+        tree \
         unzip \
         vim-tiny \
         wget \
         xz-utils \
+        zip \
     && USER_GROUP="$(getent group "${GID}" | cut -d: -f1)" \
     && if [ -z "${USER_GROUP}" ]; then groupadd --gid "${GID}" "${USER}"; USER_GROUP="${USER}"; fi \
     && EXISTING_USER="$(getent passwd "${UID}" | cut -d: -f1)" \
@@ -86,6 +96,7 @@ RUN apt-get update \
     && locale-gen en_US.UTF-8 \
     && echo "${USER} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER}" \
     && chmod 0440 "/etc/sudoers.d/${USER}" \
+    && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -102,6 +113,9 @@ RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_D
     && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
     && ln -sf /opt/node-current/bin/npm /usr/local/bin/npm \
     && ln -sf /opt/node-current/bin/npx /usr/local/bin/npx \
+    && printf '[ -f /etc/bash_completion ] && . /etc/bash_completion\n[ -f /etc/profile.d/nvm.sh ] && . /etc/profile.d/nvm.sh\nexport PATH="$HOME/.opencode/bin:$PATH"\n' \
+        > "${HOME}/.bashrc" \
+    && chown "${USER}:$(id -gn "${USER}")" "${HOME}/.bashrc" \
     && chown -R "${USER}:$(id -gn "${USER}")" "${NVM_DIR}" "${BUN_INSTALL}"
 
 USER ${USER}
