@@ -105,7 +105,7 @@ COPY --from=gh-builder /usr/bin/gh /usr/bin/gh
 COPY --from=tool-builder /opt/nvm /opt/nvm
 COPY --from=tool-builder /opt/bun /opt/bun
 COPY --from=tool-builder /opt/node-current /opt/node-current
-COPY scripts/container-init.sh /usr/local/bin/container-init.sh
+COPY build/container-init.sh /usr/local/bin/container-init.sh
 
 # Load nvm automatically for interactive shells.
 RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_DIR}" "${NVM_DIR}" "${NVM_DIR}" \

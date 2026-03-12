@@ -11,4 +11,5 @@ fi
 
 ln -sfn "${HOME}/.config/git/config" "${HOME}/.gitconfig"
 
+cd /projects
 exec opencode serve --hostname 0.0.0.0
