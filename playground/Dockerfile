@@ -52,7 +52,13 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
     && USER_GROUP="$(getent group "${GID}" | cut -d: -f1)" \
     && if [ -z "${USER_GROUP}" ]; then groupadd --gid "${GID}" "${USER}"; USER_GROUP="${USER}"; fi \
-    && useradd --uid "${UID}" --gid "${USER_GROUP}" --create-home --shell /bin/bash "${USER}" \
+    && EXISTING_USER="$(getent passwd "${UID}" | cut -d: -f1)" \
+    && if [ -n "${EXISTING_USER}" ] && [ "${EXISTING_USER}" != "${USER}" ]; then \
+        usermod --login "${USER}" --home "${HOME}" --move-home --shell /bin/bash "${EXISTING_USER}"; \
+      elif ! id -u "${USER}" >/dev/null 2>&1; then \
+        useradd --uid "${UID}" --gid "${USER_GROUP}" --create-home --shell /bin/bash "${USER}"; \
+      fi \
+    && usermod --gid "${USER_GROUP}" "${USER}" \
     && mkdir -p /projects "${HOME}/.opencode/bin" "${NVM_DIR}" "${BUN_INSTALL}" \
     && chown -R "${USER}:${USER}" /projects "${HOME}" "${NVM_DIR}" "${BUN_INSTALL}" \
     && apt-get clean \
