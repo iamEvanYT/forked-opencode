@@ -12,7 +12,8 @@ VOLUMES_PATH="${TARGET_PATH}/volumes"
 LOCAL_PATH="${VOLUMES_PATH}/local"
 CACHE_PATH="${VOLUMES_PATH}/cache"
 CONFIG_PATH="${VOLUMES_PATH}/config"
-GITCONFIG_PATH="${CONFIG_PATH}/gitconfig"
+GIT_DIR_PATH="${CONFIG_PATH}/git"
+GITCONFIG_PATH="${GIT_DIR_PATH}/config"
 
 if [ ! -d "${TARGET_PATH}" ]; then
   echo "Creating ${TARGET_PATH}"
@@ -25,7 +26,8 @@ sudo install -d -o "${TARGET_UID}" -g "${TARGET_GID}" -m 755 \
   "${LOCAL_PATH}" \
   "${LOCAL_PATH}/share" \
   "${CACHE_PATH}" \
-  "${CONFIG_PATH}"
+  "${CONFIG_PATH}" \
+  "${GIT_DIR_PATH}"
 
 if [ ! -e "${GITCONFIG_PATH}" ]; then
   echo "Creating ${GITCONFIG_PATH}"

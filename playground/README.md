@@ -17,4 +17,4 @@ The goal is not a minimal runtime container. The goal is a container the agent c
 `docker-compose.yml` and the `scripts/` helpers are still the main way to run the image as a long-lived sandbox.
 
 Run `scripts/setup.sh` before first boot, or just use `scripts/startup.sh`.
-The setup script creates and fixes ownership for the bind-mounted `projects/` and `volumes/` paths, including the persisted container git config at `volumes/config/gitconfig`.
+The setup script creates and fixes ownership for the bind-mounted `projects/` and `volumes/` paths, including the persisted container git config at `volumes/config/git/config`. On container start, `~/.gitconfig` is recreated as a symlink to that persisted file.

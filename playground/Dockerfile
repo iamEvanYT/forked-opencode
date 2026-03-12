@@ -105,6 +105,7 @@ COPY --from=gh-builder /usr/bin/gh /usr/bin/gh
 COPY --from=tool-builder /opt/nvm /opt/nvm
 COPY --from=tool-builder /opt/bun /opt/bun
 COPY --from=tool-builder /opt/node-current /opt/node-current
+COPY scripts/container-init.sh /usr/local/bin/container-init.sh
 
 # Load nvm automatically for interactive shells.
 RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_DIR}" "${NVM_DIR}" "${NVM_DIR}" \
@@ -113,6 +114,7 @@ RUN printf 'export NVM_DIR="%s"\n[ -s "%s/nvm.sh" ] && . "%s/nvm.sh"\n' "${NVM_D
     && ln -sf /opt/node-current/bin/node /usr/local/bin/node \
     && ln -sf /opt/node-current/bin/npm /usr/local/bin/npm \
     && ln -sf /opt/node-current/bin/npx /usr/local/bin/npx \
+    && chmod 0755 /usr/local/bin/container-init.sh \
     && chown -R "${USER}:$(id -gn "${USER}")" "${NVM_DIR}" "${BUN_INSTALL}"
 
 USER ${USER}
@@ -128,4 +130,4 @@ RUN ln -sf "${HOME}/.opencode/bin/opencode" /usr/local/bin/opencode \
 
 USER ${USER}
 
-CMD ["opencode", "serve", "--hostname", "0.0.0.0"]
+CMD ["container-init.sh"]
