@@ -14,6 +14,9 @@ CACHE_PATH="${VOLUMES_PATH}/cache"
 CONFIG_PATH="${VOLUMES_PATH}/config"
 GIT_DIR_PATH="${CONFIG_PATH}/git"
 GITCONFIG_PATH="${GIT_DIR_PATH}/config"
+OC_PATH="${VOLUMES_PATH}/oc"
+OC_COMMANDS_PATH="${OC_PATH}/commands"
+OC_CONFIG_PATH="${OC_PATH}/opencode.json"
 
 if [ ! -d "${TARGET_PATH}" ]; then
   echo "Creating ${TARGET_PATH}"
@@ -27,11 +30,20 @@ sudo install -d -o "${TARGET_UID}" -g "${TARGET_GID}" -m 755 \
   "${LOCAL_PATH}/share" \
   "${CACHE_PATH}" \
   "${CONFIG_PATH}" \
-  "${GIT_DIR_PATH}"
+  "${GIT_DIR_PATH}" \
+  "${OC_PATH}" \
+  "${OC_COMMANDS_PATH}"
 
 if [ ! -e "${GITCONFIG_PATH}" ]; then
   echo "Creating ${GITCONFIG_PATH}"
   sudo install -o "${TARGET_UID}" -g "${TARGET_GID}" -m 644 /dev/null "${GITCONFIG_PATH}"
+fi
+
+if [ ! -e "${OC_CONFIG_PATH}" ]; then
+  echo "Creating ${OC_CONFIG_PATH}"
+  echo '{}' | sudo tee "${OC_CONFIG_PATH}" > /dev/null
+  sudo chown "${TARGET_UID}:${TARGET_GID}" "${OC_CONFIG_PATH}"
+  sudo chmod 644 "${OC_CONFIG_PATH}"
 fi
 
 echo "Fixing ownership on bind-mount paths to ${TARGET_UID}:${TARGET_GID}"
