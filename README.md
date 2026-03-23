@@ -17,6 +17,10 @@ curl -fsSL https://raw.githubusercontent.com/iamEvanYT/forked-opencode/refs/head
 
 This fork can route Codex requests through a proxy without changing the OAuth flow. OpenCode still obtains the normal ChatGPT OAuth tokens, then sends the resulting Codex HTTP requests to your proxy instead of directly to `chatgpt.com`.
 
+Recommended proxy:
+
+- [iamEvanYT/codex-proxy](https://github.com/iamEvanYT/codex-proxy)
+
 Supported env vars:
 
 ```bash
