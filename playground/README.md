@@ -4,7 +4,7 @@ This is a Docker image for running OpenCode inside an isolated Ubuntu-based deve
 
 The goal is not a minimal runtime container. The goal is a container the agent can live in and use like a normal CLI dev box.
 
-Current OpenCode version: v1.2.27
+Current OpenCode version: v1.3.0
 
 ## Image workflow
 
